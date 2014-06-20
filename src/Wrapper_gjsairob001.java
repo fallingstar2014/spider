@@ -38,8 +38,8 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		
 		// 通过代理访问
-		httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
-		Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));
+		//httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
+		//Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));
 		
 		//首次请求，94 提取__VIEWSTATE、__EVENTVALIDATION
 		QFGetMethod get2 = new QFGetMethod("https://open.maxitours.be/blueairsitesearch.aspx?culture=en-US");
