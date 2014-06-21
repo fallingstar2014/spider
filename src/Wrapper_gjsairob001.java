@@ -196,7 +196,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				
 				// 开始解析...
 				String[] flightTxts = flightHtml.split("Arrival");
-				int zzcs = flightTxts.length - 1;	//	中转次数
+				int jtcs = flightTxts.length - 1;	//	经停次数
 				String DepartureFlight = StringUtils.substringBetween(flightHtml, "DepartureFlight", "Departure");
 				String priceTxt = StringUtils.substringAfterLast(flightHtml,"Price");
 				String Price =  priceTxt.substring(0, priceTxt.length() - 3);
@@ -209,12 +209,11 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				
 				//	设置flightDetail
 				List<String> flightNoList = new ArrayList<String>();
-				for (int zz = 0;zz < zzcs;zz++) {	//设置flightNo
+				/*for (int zz = 0;zz < jtcs;zz++) {	//设置flightNo
 					flightNoList.add(DepartureFlight);
-				}
+				}*/
+				flightNoList.add(DepartureFlight);
 				flightDetail.setFlightno(flightNoList);
-				
-
 
 				flightDetail.setDepdate(depDate);
 				flightDetail.setMonetaryunit(moneyUnit);
@@ -226,10 +225,10 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				baseFlight.setDetail(flightDetail);
 				
 				// 设置FlightSegement
-				String depairports[] = new String[zzcs];
-				String deptimes[] = new String[zzcs];
-				String arrairports[] = new String[zzcs];
-				String arrtimes[] = new String[zzcs];
+				String depairports[] = new String[jtcs];
+				String deptimes[] = new String[jtcs];
+				String arrairports[] = new String[jtcs];
+				String arrtimes[] = new String[jtcs];
 				for (int zz = 0;zz < flightTxts.length;zz++) {	//设置Departures、Arrivals
 					if (zz == 0) {	//第一段，取出首飞机场、时间
 						String temp = StringUtils.substringAfterLast(flightTxts[zz],"Departure");
@@ -248,7 +247,9 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 						deptimes[zz] = temp2.substring(3);
 					}
 				}
-				for (int zz = 0;zz < zzcs;zz++) {
+				
+				//经停不处理
+				/*for (int zz = 0;zz < jtcs;zz++) {
 					FlightSegement seg = new FlightSegement();
 					seg.setFlightno(DepartureFlight);
 					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
@@ -260,7 +261,20 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 					seg.setDeptime(deptimes[zz]);
 					seg.setArrtime(arrtimes[zz]);
 					segs.add(seg);
-				}
+				}*/
+				
+				FlightSegement seg = new FlightSegement();
+				seg.setFlightno(DepartureFlight);
+				SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+				String strDateDepDate = sdf.format(depDate);
+				String strDateRetDate = sdf.format(retDate);  
+				seg.setDepDate(strDateDepDate);
+				seg.setArrDate(strDateRetDate);
+				seg.setDepairport(arg1.getDep());
+				seg.setArrairport(arg1.getArr());
+				seg.setDeptime(deptimes[0]);
+				seg.setArrtime(arrtimes[jtcs - 1]);
+				segs.add(seg);
 				
 				baseFlight.setInfo(segs);
 				flightList.add(baseFlight);
@@ -283,7 +297,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				// 开始解析...
 				flightHtml = StringUtils.substringAfter(flightHtml, "FlightArrival");
 				String[] flightTxts = flightHtml.split("Arrival");
-				int zzcs = flightTxts.length - 1;	//	中转次数
+				int jtcs = flightTxts.length - 1;	//	经停次数
 				String DepartureFlight = StringUtils.substringBetween(flightHtml, "Flight", "Departure");
 				String priceTxt = StringUtils.substringAfterLast(flightHtml,"Price");
 				String Price =  priceTxt.substring(0, priceTxt.length() - 3);
@@ -293,18 +307,19 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				RoundTripFlightInfo roundTripFlight = new RoundTripFlightInfo();
 				List<FlightSegement> segs = new ArrayList<FlightSegement>();
 				List<String> flightNoList = new ArrayList<String>();
-				for (int zz = 0;zz < zzcs;zz++) {	//设置flightNo
+				/*for (int zz = 0;zz < jtcs;zz++) {	//设置flightNo
 					flightNoList.add(DepartureFlight);
-				}
+				}*/
+				flightNoList.add(DepartureFlight);
 				roundTripFlight.setRetflightno(flightNoList);
 				roundTripFlight.setReturnedPrice(Double.parseDouble(Price));
 				roundTripFlight.setRetdepdate(retDate);
 				
 				// 设置FlightSegement
-				String depairports[] = new String[zzcs];
-				String deptimes[] = new String[zzcs];
-				String arrairports[] = new String[zzcs];
-				String arrtimes[] = new String[zzcs];
+				String depairports[] = new String[jtcs];
+				String deptimes[] = new String[jtcs];
+				String arrairports[] = new String[jtcs];
+				String arrtimes[] = new String[jtcs];
 				for (int zz = 0;zz < flightTxts.length;zz++) {	//设置Departures、Arrivals
 					if (zz == 0) {	//第一段，取出首飞机场、时间
 						String temp = StringUtils.substringAfterLast(flightTxts[zz],"Departure");
@@ -323,7 +338,9 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 						deptimes[zz] = temp2.substring(3);
 					}
 				}
-				for (int zz = 0;zz < zzcs;zz++) {
+				
+				// 经停不处理
+				/*for (int zz = 0;zz < jtcs;zz++) {
 					FlightSegement seg = new FlightSegement();
 					seg.setFlightno(DepartureFlight);
 					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
@@ -335,7 +352,18 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 					seg.setDeptime(deptimes[zz]);
 					seg.setArrtime(arrtimes[zz]);
 					segs.add(seg);
-				}
+				}*/
+				
+				FlightSegement seg = new FlightSegement();
+				seg.setFlightno(DepartureFlight);
+				SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+				String strDateDepDate = sdf.format(depDate);
+				String strDateRetDate = sdf.format(retDate);  
+				seg.setDepairport(strDateDepDate);
+				seg.setArrairport(strDateRetDate);
+				seg.setDeptime(deptimes[0]);
+				seg.setArrtime(arrtimes[jtcs - 1]);
+				segs.add(seg);
 				
 				roundTripFlight.setRetinfo(segs);
 				roundTripFlightList.add(roundTripFlight);
