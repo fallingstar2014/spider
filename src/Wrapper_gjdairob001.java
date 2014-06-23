@@ -281,6 +281,8 @@ public class Wrapper_gjdairob001 implements QunarCrawler{
 				String[] flightTxts = flightHtml.split("Arrival");
 				int jtcs = flightTxts.length - 1;	//	经停次数
 				String DepartureFlight = StringUtils.substringBetween(flightHtml, "DepartureFlight", "Departure");
+				DepartureFlight = "0B" + DepartureFlight;	// 补齐航空公司二字码
+				
 				String priceTxt = StringUtils.substringAfterLast(flightHtml,"Price");
 				String Price =  priceTxt.substring(0, priceTxt.length() - 3);
 				String moneyUnit = priceTxt.substring(priceTxt.length() - 3, priceTxt.length());
