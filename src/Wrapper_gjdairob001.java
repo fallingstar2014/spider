@@ -298,7 +298,7 @@ public class Wrapper_gjdairob001 implements QunarCrawler{
 				flightNoList.add(DepartureFlight);
 				flightDetail.setFlightno(flightNoList);
 				
-				SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				Date date = format.parse(arg1.getDepDate());
 				flightDetail.setDepdate(date);
 				flightDetail.setMonetaryunit(moneyUnit);
@@ -381,7 +381,7 @@ public class Wrapper_gjdairob001 implements QunarCrawler{
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("CND");
 		searchParam.setArr("LTN");
-		searchParam.setDepDate("17.07.2014");
+		searchParam.setDepDate("2014-07-17");
 		searchParam.setTimeOut("60000");
 		searchParam.setToken("");
 		searchParam.setWrapperid("Wrapper_gjdairob001");
