@@ -268,9 +268,9 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				seg.setFlightno(DepartureFlight);
 				SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
 				String strDateDepDate = sdf.format(depDate);
-				String strDateRetDate = sdf.format(retDate);  
-				seg.setDepDate(strDateDepDate);
-				seg.setArrDate(strDateRetDate);
+				//String strDateRetDate = sdf.format(retDate);  
+				seg.setDepDate(strDateDepDate);	//去程起飞、到达日期相同
+				seg.setArrDate(strDateDepDate);
 				seg.setDepairport(arg1.getDep());
 				seg.setArrairport(arg1.getArr());
 				seg.setDeptime(deptimes[0]);
@@ -359,9 +359,9 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				FlightSegement seg = new FlightSegement();
 				seg.setFlightno(DepartureFlight);
 				SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-				String strDateDepDate = sdf.format(depDate);
+				//String strDateDepDate = sdf.format(depDate);
 				String strDateRetDate = sdf.format(retDate);  
-				seg.setDepDate(strDateDepDate);
+				seg.setDepDate(strDateRetDate);
 				seg.setArrDate(strDateRetDate);
 				seg.setDepairport(arg1.getDep());
 				seg.setArrairport(arg1.getArr());
