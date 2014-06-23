@@ -361,8 +361,10 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 				String strDateDepDate = sdf.format(depDate);
 				String strDateRetDate = sdf.format(retDate);  
-				seg.setDepairport(strDateDepDate);
-				seg.setArrairport(strDateRetDate);
+				seg.setDepDate(strDateDepDate);
+				seg.setArrDate(strDateRetDate);
+				seg.setDepairport(arg1.getDep());
+				seg.setArrairport(arg1.getArr());
 				seg.setDeptime(deptimes[0]);
 				seg.setArrtime(arrtimes[jtcs - 1]);
 				segs.add(seg);
