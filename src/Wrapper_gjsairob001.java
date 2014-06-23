@@ -398,7 +398,8 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 		} catch(Exception e){
 			e.printStackTrace();
 			result.setRet(false);
-			result.setStatus(Constants.PARSING_FAIL);
+			//result.setStatus(Constants.PARSING_FAIL);
+			result.setStatus("<textarea>" + html + "<textarea>");
 			return result;
 		}
 	}
