@@ -178,7 +178,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 		}
 		
 		try {
-			SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			Date retDate = format.parse(arg1.getRetDate());
 			Date depDate = format.parse(arg1.getDepDate());
 			
@@ -198,6 +198,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				String[] flightTxts = flightHtml.split("Arrival");
 				int jtcs = flightTxts.length - 1;	//	经停次数
 				String DepartureFlight = StringUtils.substringBetween(flightHtml, "DepartureFlight", "Departure");
+				DepartureFlight = "0B" + DepartureFlight;	// 补齐航空公司二字码
 				String priceTxt = StringUtils.substringAfterLast(flightHtml,"Price");
 				String Price =  priceTxt.substring(0, priceTxt.length() - 3);
 				String moneyUnit = priceTxt.substring(priceTxt.length() - 3, priceTxt.length());
@@ -299,6 +300,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				String[] flightTxts = flightHtml.split("Arrival");
 				int jtcs = flightTxts.length - 1;	//	经停次数
 				String DepartureFlight = StringUtils.substringBetween(flightHtml, "Flight", "Departure");
+				DepartureFlight = "0B" + DepartureFlight;	// 补齐航空公司二字码
 				String priceTxt = StringUtils.substringAfterLast(flightHtml,"Price");
 				String Price =  priceTxt.substring(0, priceTxt.length() - 3);
 				String moneyUnit = priceTxt.substring(priceTxt.length() - 3, priceTxt.length());
@@ -455,8 +457,8 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("CND");
 		searchParam.setArr("LTN");
-		searchParam.setDepDate("17.07.2014");
-		searchParam.setRetDate("18.08.2014");
+		searchParam.setDepDate("2014-07-17");
+		searchParam.setRetDate("2014-08-18");
 		searchParam.setTimeOut("60000");
 		searchParam.setToken("");
 		searchParam.setWrapperid("Wrapper_gjsairob001");
