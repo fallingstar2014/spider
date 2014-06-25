@@ -6,11 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.lang.StringUtils;
+
 import com.qunar.qfwrapper.bean.booking.BookingInfo;
 import com.qunar.qfwrapper.bean.booking.BookingResult;
 import com.qunar.qfwrapper.bean.search.BaseFlightInfo;
@@ -115,7 +115,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 		
 		NameValuePair[] names = {
 				new NameValuePair("BookingBox1$ddlFrom",arg0.getDep()),
-				//new NameValuePair("BookingBox1$ddlFrom","CND"),
+				//new NameValuePair("BookingBox1$ddlFrom","BVA"),
 				new NameValuePair("BookingBox1$ddlTo",arg0.getArr()),
 				new NameValuePair("BookingBox1$txtDepartureDate",strDateDepDate),
 				new NameValuePair("BookingBox1$txtReturnDate",strDateRetDate),
@@ -129,7 +129,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				new NameValuePair("BookingBox1$ddlAdult","1"),
 				new NameValuePair("BookingBox1$ddlChildren","0"),
 				new NameValuePair("BookingBox1$ddlInfant","0"),
-				new NameValuePair("BookingBox1$ddlCurrency","RON"),
+				new NameValuePair("BookingBox1$ddlCurrency","EUR"),
 				new NameValuePair("BookingBox1$txtConfirmationNumber1",""),
 				new NameValuePair("BookingBox1$txtContactEmail",""),
 				new NameValuePair("BookingBox1$txtConfirmationNumber2",""),
@@ -468,10 +468,10 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 	
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("AYT");
-		searchParam.setArr("CLJ");
+		searchParam.setDep("CND");
+		searchParam.setArr("LTN");
 		searchParam.setDepDate("2014-07-17");
-		searchParam.setRetDate("2014-08-14");
+		searchParam.setRetDate("2014-08-18");
 		searchParam.setTimeOut("60000");
 		searchParam.setToken("");
 		searchParam.setWrapperid("Wrapper_gjsairob001");
