@@ -1,16 +1,16 @@
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.lang.StringUtils;
-
 import com.qunar.qfwrapper.bean.booking.BookingInfo;
 import com.qunar.qfwrapper.bean.booking.BookingResult;
 import com.qunar.qfwrapper.bean.search.BaseFlightInfo;
@@ -41,6 +41,17 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 		//httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
 		//Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));
 		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date retDate = format.parse(arg0.getRetDate());
+		Date depDate = format.parse(arg0.getDepDate());
+		SimpleDateFormat sdf=new SimpleDateFormat("dd.MM.yyyy");  
+		String strDateDepDate = sdf.format(depDate);
+		String strDateRetDate = sdf.format(retDate);  
+		String strcurDate = sdf.format(new Date());
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE, 7);
+		String strAfterDate = sdf.format(c.getTime());
+		
 		//首次请求，94 提取__VIEWSTATE、__EVENTVALIDATION
 		QFGetMethod get2 = new QFGetMethod("https://open.maxitours.be/blueairsitesearch.aspx?culture=en-US");
 		get2.setRequestHeader("Referer", "http://www.blueairweb.com/first-page/");
@@ -69,6 +80,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				new NameValuePair("BookingBox1$ddlCurrency","EUR"),
 				new NameValuePair("BookingBox1$ddlDestinationCity","-1"),
 				new NameValuePair("BookingBox1$ddlFrom",arg0.getDep()),
+				//new NameValuePair("BookingBox1$ddlFrom","BVA"),
 				new NameValuePair("BookingBox1$ddlInfant","0"),
 				new NameValuePair("BookingBox1$ddlOriginCity","-1"),
 				new NameValuePair("BookingBox1$ddlTo","-1"),
@@ -77,10 +89,10 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 				new NameValuePair("BookingBox1$txtConfirmationNumber1",""),
 				new NameValuePair("BookingBox1$txtConfirmationNumber2",""),
 				new NameValuePair("BookingBox1$txtContactEmail",""),
-				new NameValuePair("BookingBox1$txtDepartureDate","20.06.2014"),
+				new NameValuePair("BookingBox1$txtDepartureDate",strcurDate),
 				new NameValuePair("BookingBox1$txtFirstName",""),
 				new NameValuePair("BookingBox1$txtLastName",""),
-				new NameValuePair("BookingBox1$txtReturnDate","27.06.2014"),
+				new NameValuePair("BookingBox1$txtReturnDate",strAfterDate),
 				new NameValuePair("ScriptManager1","BookingBox1$updAJAX|BookingBox1$ddlFrom")
 	    };
 	 	
@@ -97,17 +109,16 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 		String __EVENTVALIDATION208 = StringUtils.substringBetween(html208,"__EVENTVALIDATION|", "|");
 		String cookie = StringUtils.join(httpClient.getState().getCookies(),"; ");		
 				
-		
-		
 		// 填写查询表单，提交请求
 		post = new QFPostMethod("https://open.maxitours.be/blueairsitesearch.aspx?culture=en-US");
-		post.setFollowRedirects(false);	//302
+		//post.setFollowRedirects(false);	//302
 		
 		NameValuePair[] names = {
 				new NameValuePair("BookingBox1$ddlFrom",arg0.getDep()),
+				//new NameValuePair("BookingBox1$ddlFrom","CND"),
 				new NameValuePair("BookingBox1$ddlTo",arg0.getArr()),
-				new NameValuePair("BookingBox1$txtDepartureDate",arg0.getDepDate()),
-				new NameValuePair("BookingBox1$txtReturnDate",arg0.getRetDate()),
+				new NameValuePair("BookingBox1$txtDepartureDate",strDateDepDate),
+				new NameValuePair("BookingBox1$txtReturnDate",strDateRetDate),
 				new NameValuePair("ScriptManager1","BookingBox1$updAJAX|BookingBox1$btnSearchFlights"),
 				new NameValuePair("__EVENTTARGET","BookingBox1$btnSearchFlights"),
 				new NameValuePair("__EVENTARGUMENT",""),
@@ -378,7 +389,7 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 			for (int qc = 0;qc < flightList.size();qc++) {
 				for (int fc = 0;fc < roundTripFlightList.size();fc++) {
 					OneWayFlightInfo qcFlightInfo = flightList.get(qc);
-					RoundTripFlightInfo fcFlightInfo = roundTripFlightList.get(qc);
+					RoundTripFlightInfo fcFlightInfo = roundTripFlightList.get(fc);
 					
 					// 组合 
 					RoundTripFlightInfo roundTripFlightInfo = new RoundTripFlightInfo();
@@ -457,10 +468,10 @@ public class Wrapper_gjsairob001 implements QunarCrawler{
 	
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("CND");
-		searchParam.setArr("LTN");
+		searchParam.setDep("AYT");
+		searchParam.setArr("CLJ");
 		searchParam.setDepDate("2014-07-17");
-		searchParam.setRetDate("2014-08-18");
+		searchParam.setRetDate("2014-08-14");
 		searchParam.setTimeOut("60000");
 		searchParam.setToken("");
 		searchParam.setWrapperid("Wrapper_gjsairob001");
