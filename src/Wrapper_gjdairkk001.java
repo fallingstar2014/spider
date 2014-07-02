@@ -48,7 +48,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		Date retDate = format.parse(arg0.getRetDate());
 		SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");  
 		String strDateDepDate = sdf.format(depDate);
-		String strDateRetDate = sdf.format(retDate);
+		//String strDateRetDate = sdf.format(retDate);
 
 		
 		//String depdate=arg0.getDepDate().replaceAll("-","")+"0000";	
@@ -61,7 +61,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 				new NameValuePair("lang","EN"),
 				new NameValuePair("direction","1"),
 				new NameValuePair("depdate",strDateDepDate),
-				new NameValuePair("retdate",strDateRetDate),
+				new NameValuePair("retdate",strDateDepDate),
 				new NameValuePair("adult","1"),
 				new NameValuePair("yp","0"),
 				new NameValuePair("chd","0"),
@@ -119,7 +119,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		
 		SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");  
 		String strDateDepDate = sdf.format(depDate);
-		String strDateRetDate = sdf.format(retDate);
+		//String strDateRetDate = sdf.format(retDate);
 		
 		
 		Map<String, String> map = new LinkedHashMap<String, String>();
@@ -136,7 +136,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		map.put("from",arg0.getDep());
 		map.put("to",arg0.getArr());
 		map.put("depdate",strDateDepDate);
-		map.put("retdate",strDateRetDate);
+		map.put("retdate",strDateDepDate);
 		map.put("adult","1");
 		map.put("yp","0");
 		map.put("chd","0");
@@ -148,7 +148,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		map.put("selectedTo",arg0.getArr());
 		map.put("selectedOpenJaw","");
 		map.put("currentDeptDate",strDateDepDate);
-		map.put("currentRetDate",strDateRetDate);
+		map.put("currentRetDate",strDateDepDate);
 		map.put("fromDesc",arg0.getDep() + "NA");
 		map.put("toDesc",arg0.getArr());
 		map.put("openjawDesc","");
