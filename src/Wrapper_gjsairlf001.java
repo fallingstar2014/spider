@@ -46,6 +46,7 @@ public class Wrapper_gjsairlf001 implements QunarCrawler{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		String strAfterDate = arg0.getRetDate();
 		String curDateStr[] = arg0.getDepDate().split("-");
 		String aftDateStr[] = strAfterDate.split("-");

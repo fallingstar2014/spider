@@ -44,6 +44,7 @@ public class Wrapper_gjdairlf001 implements QunarCrawler{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		Calendar c = Calendar.getInstance();
 		c.setTime(depDate);
 		c.add(c.DATE, 1);
