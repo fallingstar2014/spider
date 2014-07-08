@@ -222,8 +222,17 @@ public class Wrapper_gjsairdc001 implements QunarCrawler{
 				flightHtml = flightHtml.replaceAll("&nbsp;", "");
 				
 				// 开始解析...
-				String DepartureFlight = StringUtils.substringBetween(flights[i], "Flight&nbsp;", "</label>");
-				DepartureFlight = StringUtils.substringAfter(DepartureFlight, ">");
+				String DepartureFlight = null;
+				if (sFlightInfo.indexOf("Flight&nbsp;") >= 0) {
+					DepartureFlight = StringUtils.substringBetween(sFlightInfo, "Flight&nbsp;", "</label>");
+					DepartureFlight = StringUtils.substringAfter(DepartureFlight, ">");
+				} else if (sFlightInfo.indexOf("Flight&nbsp") >= 0) {
+					DepartureFlight = StringUtils.substringBetween(sFlightInfo, "Flight&nbsp", "</label>");
+					DepartureFlight = StringUtils.substringAfter(DepartureFlight, ">");
+				} else if (sFlightInfo.indexOf("Flight") >= 0) {
+					DepartureFlight = sFlightInfo.substring(sFlightInfo.indexOf("Flight") + 6, sFlightInfo.indexOf("Flight") + 11);
+				}
+				
 				String priceTxt = StringUtils.substringBetween(flightHtml,"Skatter/Avgifter:", "Moms");
 				String Price = priceTxt.substring(0,priceTxt.length() - 3);
 				String taxTxt = StringUtils.substringBetween(flightHtml,"Moms:", "(");
@@ -285,8 +294,16 @@ public class Wrapper_gjsairdc001 implements QunarCrawler{
 				flightHtml = flightHtml.replaceAll("&nbsp;", "");
 				
 				// 开始解析...
-				String DepartureFlight = StringUtils.substringBetween(flights[i], "Flight&nbsp;", "</label>");
-				DepartureFlight = StringUtils.substringAfter(DepartureFlight, ">");
+				String DepartureFlight = null;
+				if (sFlightInfo.indexOf("Flight&nbsp;") >= 0) {
+					DepartureFlight = StringUtils.substringBetween(sFlightInfo, "Flight&nbsp;", "</label>");
+					DepartureFlight = StringUtils.substringAfter(DepartureFlight, ">");
+				} else if (sFlightInfo.indexOf("Flight&nbsp") >= 0) {
+					DepartureFlight = StringUtils.substringBetween(sFlightInfo, "Flight&nbsp", "</label>");
+					DepartureFlight = StringUtils.substringAfter(DepartureFlight, ">");
+				} else if (sFlightInfo.indexOf("Flight") >= 0) {
+					DepartureFlight = sFlightInfo.substring(sFlightInfo.indexOf("Flight") + 6, sFlightInfo.indexOf("Flight") + 11);
+				}
 				String priceTxt = StringUtils.substringBetween(flightHtml,"Skatter/Avgifter:", "Moms");
 				String Price = priceTxt.substring(0,priceTxt.length() - 3);
 				String taxTxt = StringUtils.substringBetween(flightHtml,"Moms:", "(");
@@ -374,10 +391,10 @@ public class Wrapper_gjsairdc001 implements QunarCrawler{
 	
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("HAD");
+		searchParam.setDep("AGH");
 		searchParam.setArr("BMA");
-		searchParam.setDepDate("2014-08-14");
-		searchParam.setRetDate("2014-08-21");
+		searchParam.setDepDate("2014-08-01");
+		searchParam.setRetDate("2014-08-08");
 		searchParam.setTimeOut("60000");
 		searchParam.setToken("");
 		searchParam.setWrapperid("Wrapper_gjsairob001");
