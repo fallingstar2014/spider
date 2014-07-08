@@ -148,6 +148,7 @@ public class Wrapper_gjsairdc001 implements QunarCrawler{
 	 		post2.addRequestHeader("Cookie",new_cookie);
 			post2.setRequestHeader("Connection", "Keep-Alive");
 			httpClient.executeMethod(post2);
+			post2.releaseConnection();
 			
 			// 232  追加请求，获取航班号
 			QFPostMethod post3 = new QFPostMethod("https://book.sverigeflyg.se/Receipt/GetReceiptOngoingBooking");
@@ -164,6 +165,7 @@ public class Wrapper_gjsairdc001 implements QunarCrawler{
 			String html232 =  post3.getResponseBodyAsString();
 			html232 = html232 + "$" + wfbz + "$";
 			resultHtml.append(html232).append(this.HTML_SPLIT_BZ);
+			post3.releaseConnection();
 		}
 		
 		return resultHtml.toString();
