@@ -30,7 +30,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 	/**
 	 * @param args
 	 */
-	public String getHtml(FlightSearchParam arg0) {
+public String getHtml(FlightSearchParam arg0) {
 		
 		QFPostMethod post = null;
 		try
@@ -40,15 +40,15 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		
 		// 通过代理访问
-		//httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
-		//Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));		
+		httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
+		Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));		
 				
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date depDate = format.parse(arg0.getDepDate());
 		Date retDate = format.parse(arg0.getRetDate());
 		SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");  
 		String strDateDepDate = sdf.format(depDate);
-		//String strDateRetDate = sdf.format(retDate);
+		String strDateRetDate = sdf.format(retDate);
 
 		
 		//String depdate=arg0.getDepDate().replaceAll("-","")+"0000";	
@@ -61,7 +61,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 				new NameValuePair("lang","EN"),
 				new NameValuePair("direction","1"),
 				new NameValuePair("depdate",strDateDepDate),
-				new NameValuePair("retdate",strDateDepDate),
+				new NameValuePair("retdate",strDateRetDate),
 				new NameValuePair("adult","1"),
 				new NameValuePair("yp","0"),
 				new NameValuePair("chd","0"),
@@ -99,8 +99,8 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		    
 	}
 
+	@Override
 	public BookingResult getBookingInfo(FlightSearchParam arg0) {
-
 		String bookingUrlPre = "https://online.atlasjet.com/AtlasOnline/passenger.kk";
 		BookingResult bookingResult = new BookingResult();
 		BookingInfo bookingInfo = new BookingInfo();
@@ -169,6 +169,8 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		return bookingResult;
 	}
 
+	
+
 	public ProcessResultInfo process(String arg0, FlightSearchParam arg1) {
 		String html = arg0;
 		
@@ -184,7 +186,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 			return result;	
 		}
 		
-		// 取出航班信息
+		// 鍙栧嚭鑸彮淇℃伅
 		//String html2 = StringUtils.substringBetween(html,"<tr class=\"showContent\">" ,"</tr>");
 		String html2 = StringUtils.substringBetween(html,"<tbody>" ,"</tbody>");
 		String[] flights = html2.split("<tr class=\"showContent\">");
@@ -194,23 +196,23 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 			String Price = "";
 			String moneyUnit =  "";
 			for (int i = 1; i < flights.length; i++){
-				// 预先处理Html
+				// 棰勫厛澶勭悊Html
 				String flightHtml = flights[i];
-				flightHtml = flightHtml.replaceAll("</?[^<]+>", "");	// 过滤文章内容中的html
-				flightHtml = flightHtml.replaceAll("\\s*|\t|\r|\n", "");	// 去除空格、制表符、回车换行
-				flightHtml = flightHtml.replaceAll("&nbsp;:", "");	// 去除空格
+				flightHtml = flightHtml.replaceAll("</?[^<]+>", "");	// 杩囨护鏂囩珷鍐呭涓殑html
+				flightHtml = flightHtml.replaceAll("\\s*|\t|\r|\n", "");	// 鍘婚櫎绌烘牸銆佸埗琛ㄧ銆佸洖杞︽崲琛?
+				flightHtml = flightHtml.replaceAll("&nbsp;:", "");	// 鍘婚櫎绌烘牸
 				flightHtml = flightHtml.replaceAll("&nbsp;", "");
 				
-				// 开始解析...
+				// 寮€濮嬭В鏋?..
 				String DepartureFlight = StringUtils.substringBetween(flights[i], "<td  style=\"\" title=\"\">", "</td>");
 				DepartureFlight = DepartureFlight.replaceAll("\\s*|\t|\r|\n", "");
-				int zzbz = StringUtils.indexOf(flights[i], "rowspan=\"");	// 中转标志
+				int zzbz = StringUtils.indexOf(flights[i], "rowspan=\"");	// 涓浆鏍囧織
 				if (zzbz >= 0) {
 					String temp = StringUtils.substringBetween(flights[i], "rowspan=\"", "\"");
 					zzbz = Integer.parseInt(temp);
 				}
-				if (zzbz > 0) {	// 新航班
-					String flightHtmlPrice = StringUtils.substringBetween(flights[i], "<label", "label"); // 截取价格
+				if (zzbz > 0) {	// 鏂拌埅鐝?
+					String flightHtmlPrice = StringUtils.substringBetween(flights[i], "<label", "label"); // 鎴彇浠锋牸
 					flightHtmlPrice = StringUtils.substringBetween(flightHtmlPrice, ">","<");
 					Pattern pt=Pattern.compile("([0-9]|\\.|\\-)*");
 					Matcher m=pt.matcher(flightHtmlPrice);
@@ -218,17 +220,17 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 					Price=m.group();
 					moneyUnit =  flightHtmlPrice.substring(Price.length());
 					moneyUnit = moneyUnit.replaceAll("\\s*|\t|\r|\n", "");
-				} else {	// 中转航班
-					// 采用上一班价格
+				} else {	// 涓浆鑸彮
+					// 閲囩敤涓婁竴鐝环鏍?
 				}
 				
-				// 设置baseFlight
+				// 璁剧疆baseFlight
 				if (zzbz > 0) {
 					OneWayFlightInfo baseFlight = new OneWayFlightInfo();
 					FlightDetail flightDetail = new FlightDetail();
 					List<FlightSegement> segs = new ArrayList<FlightSegement>();
 					
-					//	设置flightDetail
+					//	璁剧疆flightDetail
 					List<String> flightNoList = new ArrayList<String>();
 					flightNoList.add(DepartureFlight);
 					flightDetail.setFlightno(flightNoList);
@@ -244,7 +246,7 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 					flightDetail.setWrapperid(arg1.getWrapperid());
 					baseFlight.setDetail(flightDetail);
 					
-					// 设置FlightSegement
+					// 璁剧疆FlightSegement
 					String deptimes = flightHtml.substring(0, 5);
 					String arrtimes = flightHtml.substring(5, 10);
 					FlightSegement seg = new FlightSegement();
@@ -261,18 +263,18 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 					
 					baseFlight.setInfo(segs);
 					flightList.add(baseFlight);
-				} else {	// 中转航班
+				} else {	// 涓浆鑸彮
 					OneWayFlightInfo baseFlight = flightList.get(flightList.size() - 1);
 					FlightDetail flightDetail = baseFlight.getDetail();
 					List<FlightSegement> segs = baseFlight.getInfo();
 					
-					//	设置flightDetail
+					//	璁剧疆flightDetail
 					List<String> flightNoList = flightDetail.getFlightno();
 					flightNoList.add(DepartureFlight);
 					flightDetail.setFlightno(flightNoList);
 					baseFlight.setDetail(flightDetail);
 					
-					// 设置FlightSegement
+					// 璁剧疆FlightSegement
 					String deptimes = flightHtml.substring(0, 5);
 					String arrtimes = flightHtml.substring(5, 10);
 					FlightSegement seg = new FlightSegement();
@@ -306,19 +308,19 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		}
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("LTN");
-		searchParam.setArr("IKA");
-		searchParam.setDepDate("2014-07-26");
-		searchParam.setRetDate("2014-07-26");
+		searchParam.setDep("ADA");
+		searchParam.setArr("IST");
+		searchParam.setDepDate("2014-07-24");
+		searchParam.setRetDate("2014-07-24");
 		searchParam.setTimeOut("60000");
 		searchParam.setToken("");
 		searchParam.setWrapperid("Wrapper_gjdairkk001");
 		
 		Wrapper_gjdairkk001 gjdairkk001 = new  Wrapper_gjdairkk001();
 		String html = gjdairkk001.getHtml(searchParam);
-		//System.out.println(html);
+	    System.out.println(html);
 
 		ProcessResultInfo result = new ProcessResultInfo();
 		result = gjdairkk001.process(html,searchParam);
@@ -334,5 +336,5 @@ public class Wrapper_gjdairkk001 implements QunarCrawler{
 		{
 			System.out.println(result.getStatus());
 		}
-	}	
+	}*/	
 }
