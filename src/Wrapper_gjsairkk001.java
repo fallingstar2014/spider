@@ -41,8 +41,8 @@ public String getHtml(FlightSearchParam arg0) {
 		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		
 		// 闁俺绻冩禒锝囨倞鐠佸潡妫?
-		httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
-		Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));		
+		//httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
+		//Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));		
 				
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date depDate = format.parse(arg0.getDepDate());
