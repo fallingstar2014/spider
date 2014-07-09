@@ -1,4 +1,10 @@
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,9 +14,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.apache.commons.httpclient.ConnectTimeoutException;
+import org.apache.commons.httpclient.HttpClientError;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.params.HttpConnectionParams;
+import org.apache.commons.httpclient.protocol.ControllerThreadSocketFactory;
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 import org.apache.commons.lang.StringUtils;
 
 import com.qunar.qfwrapper.bean.booking.BookingInfo;
@@ -37,11 +52,11 @@ public String getHtml(FlightSearchParam arg0) {
 		{
 		// get all query parameters from the url set by wrapperSearchInterface
 		QFHttpClient httpClient = new QFHttpClient(arg0, false);
-		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+		//httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		
 		// 通过代理访问
 		//httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
-		//Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));		
+		Protocol.registerProtocol("https", new Protocol("https", new MySecureProtocolSocketFactory(), 443));		
 				
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date depDate = format.parse(arg0.getDepDate());
@@ -77,7 +92,7 @@ public String getHtml(FlightSearchParam arg0) {
 		post.setRequestBody(names);
 		//String cookie = StringUtils.join(httpClient.getState().getCookies(),"; ");	
 		//httpClient.getState().clearCookies();
-		//post.addRequestHeader("Cookie","superT_v1=1404095351754.181863%3A1%3A1%3A1; superT_s1=1404095351757.26231; __utma=166957934.233118461.1404095355.1404095355.1404095355.1; __utmb=166957934.12.8.1404095421275; __utmc=166957934; __utmz=166957934.1404095355.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
+		post.addRequestHeader("Cookie","language=EN; superT_v1=1404280911144.926736%3A1%3A3%3A3; __utma=148764265.1377672688.1404281281.1404281281.1404281281.1; __utmz=148764265.1404281281.1.1.utmcsr=atlasjet.com|utmccn=(referral)|utmcmd=referral|utmcct=/MainPage; __atuvc=1%7C27; superT_v1=1404280911144.926736%3A2%3A1%3A4; superT_s1=1404867648937.196350; sp-camp-3=%7B%22step1-displayed%22%3Atrue%2C%22viDa%22%3A1404871251%7D; __utma=166957934.1878006112.1404280919.1404280919.1404867651.2; __utmb=166957934.12.8.1404867724219; __utmz=166957934.1404280919.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmc=166957934");
 		post.setRequestHeader("Referer", "http://www.atlasjet.com/MainPage");
 		//post.getParams().setContentCharset("UTF-8");
 		post.setRequestHeader("Connection", "Keep-Alive");
@@ -308,7 +323,7 @@ public String getHtml(FlightSearchParam arg0) {
 		}
 	}
 
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("ADA");
 		searchParam.setArr("IST");
@@ -336,5 +351,129 @@ public String getHtml(FlightSearchParam arg0) {
 		{
 			System.out.println(result.getStatus());
 		}
-	}*/	
+	}	
 }
+
+
+class MySecureProtocolSocketFactory implements
+SecureProtocolSocketFactory {
+
+private SSLContext sslContext = null;
+
+/**
+* Constructor for MySecureProtocolSocketFactory.
+*/
+public MySecureProtocolSocketFactory() {
+}
+
+/**
+* 
+* @return
+*/
+private static SSLContext createEasySSLContext() {
+try {
+ SSLContext context = SSLContext.getInstance("SSL");
+ context.init(null, new TrustManager[] { new MyX509TrustManager() },
+   null);
+ return context;
+} catch (Exception e) {
+ throw new HttpClientError(e.toString());
+}
+}
+
+/**
+* 
+* @return
+*/
+private SSLContext getSSLContext() {
+if (this.sslContext == null) {
+ this.sslContext = createEasySSLContext();
+}
+return this.sslContext;
+}
+
+/*
+* (non-Javadoc)
+* 
+* @see org.apache.commons.httpclient.protocol.ProtocolSocketFactory#createSocket(java.lang.String,
+*      int, java.net.InetAddress, int)
+*/
+public Socket createSocket(String host, int port, InetAddress clientHost,
+ int clientPort) throws IOException, UnknownHostException {
+
+return getSSLContext().getSocketFactory().createSocket(host, port,
+  clientHost, clientPort);
+}
+
+/*
+* (non-Javadoc)
+* 
+* @see org.apache.commons.httpclient.protocol.ProtocolSocketFactory#createSocket(java.lang.String,
+*      int, java.net.InetAddress, int,
+*      org.apache.commons.httpclient.params.HttpConnectionParams)
+*/
+public Socket createSocket(final String host, final int port,
+ final InetAddress localAddress, final int localPort,
+ final HttpConnectionParams params) throws IOException,
+ UnknownHostException, ConnectTimeoutException {
+if (params == null) {
+ throw new IllegalArgumentException("Parameters may not be null");
+}
+int timeout = params.getConnectionTimeout();
+if (timeout == 0) {
+ return createSocket(host, port, localAddress, localPort);
+} else {   
+ return ControllerThreadSocketFactory.createSocket(this, host, port,
+   localAddress, localPort, timeout);
+}
+}
+
+/*
+* (non-Javadoc)
+* 
+* @see SecureProtocolSocketFactory#createSocket(java.lang.String,int)
+*/
+public Socket createSocket(String host, int port) throws IOException,
+ UnknownHostException {
+return getSSLContext().getSocketFactory().createSocket(host, port);
+}
+
+/*
+* (non-Javadoc)
+* 
+* @see SecureProtocolSocketFactory#createSocket(java.net.Socket,java.lang.String,int,boolean)
+*/
+public Socket createSocket(Socket socket, String host, int port,
+ boolean autoClose) throws IOException, UnknownHostException {
+return getSSLContext().getSocketFactory().createSocket(socket, host,
+  port, autoClose);
+}
+}
+
+class MyX509TrustManager implements X509TrustManager {
+
+/* (non-Javadoc)
+* @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
+*/
+public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+   throws CertificateException {
+
+}
+
+/* (non-Javadoc)
+* @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
+*/
+public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+   throws CertificateException {
+
+}
+
+/* (non-Javadoc)
+* @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
+*/
+public X509Certificate[] getAcceptedIssuers() {
+   return null;
+}
+
+}
+
